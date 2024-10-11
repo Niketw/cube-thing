@@ -21,8 +21,8 @@ public class Renderer extends JPanel {
         // Add mouse listener for rotation
         addMouseMotionListener(new MouseAdapter() {
             public void mouseDragged(MouseEvent e) {
-                angleX += e.getY() * 0.01;
-                angleY += e.getX() * 0.01;
+                angleX += e.getY() * 0.0001;
+                angleY += e.getX() * 0.0001;
                 repaint();
             }
         });
