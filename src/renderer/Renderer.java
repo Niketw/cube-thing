@@ -1,9 +1,10 @@
 package renderer;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
+
 import objects.Object3d;
 import objects.Point3d;
 import objects.Polygon3d;

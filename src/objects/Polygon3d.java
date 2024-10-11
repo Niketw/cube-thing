@@ -1,6 +1,7 @@
 package objects;
 
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Color;
 import java.util.List;
 
 public class Polygon3d {
