@@ -12,17 +12,15 @@ import utils.MatrixUtils;
 public class Renderer extends JPanel {
     private Object3d cube;
     private float angleX = 0, angleY = 0;
-    private float[][] viewMatrix;
 
     public Renderer() {
         cube = createCube();
-        viewMatrix = new float[4][4];
 
-        // Add mouse listener for rotation
-        addMouseMotionListener(new MouseAdapter() {
+        // Add mouse motion listener for rotation
+        addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
-                angleX += (float) (e.getY() * 0.00001);
-                angleY += (float) (e.getX() * 0.00001);
+                angleX = (float) (e.getY() - getHeight() / 2) / (getHeight() / 2);
+                angleY = (float) -1 * (e.getX() - getWidth() / 2) / (getWidth() / 2);
                 repaint();
             }
         });
@@ -55,8 +53,8 @@ public class Renderer extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Reset view matrix and apply rotations
-        viewMatrix = MatrixUtils.createRotationX(angleX);
-        float[][] rotationY = MatrixUtils.createRotationY(angleY);
+        float[][] viewMatrix = MatrixUtils.createRotationX(angleX * (float) Math.PI); // Scale to radians
+        float[][] rotationY = MatrixUtils.createRotationY(angleY * (float) Math.PI); // Scale to radians
         viewMatrix = multiplyMatrices(viewMatrix, rotationY);
 
         // Draw the cube
