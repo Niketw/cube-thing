@@ -20,14 +20,4 @@ public class MatrixUtils {
         };
         return matrix;
     }
-
-    public static float[][] createRotationZ(float angle) {
-        float[][] matrix = {
-                {(float) Math.cos(angle), (float) -Math.sin(angle), 0, 0},
-                {(float) Math.sin(angle), (float) Math.cos(angle), 0, 0},
-                {0, 0, 1, 0},
-                {0, 0, 0, 1}
-        };
-        return matrix;
-    }
 }

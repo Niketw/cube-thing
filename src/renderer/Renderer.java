@@ -10,7 +10,7 @@ import objects.Polygon3d;
 import utils.MatrixUtils;
 
 public class Renderer extends JPanel {
-    private Object3d cube;
+    private final Object3d cube;
     private float angleX = 0, angleY = 0;
 
     public Renderer() {
@@ -19,8 +19,8 @@ public class Renderer extends JPanel {
 
         addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
-                angleX = (float) (e.getY() - getHeight() / 2) / (getHeight() / 2);
-                angleY = (float) -1 * (e.getX() - getWidth() / 2) / (getWidth() / 2);
+                angleX = (float) (e.getY() - getHeight() / 2) / ((float) getHeight() / 2);
+                angleY = (float) -1 * (e.getX() - (float) getWidth() / 2) / ((float) getWidth() / 2);
                 repaint();
             }
         });
@@ -52,13 +52,20 @@ public class Renderer extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Reset view matrix and apply rotations
-        float[][] viewMatrix = MatrixUtils.createRotationX(angleX * (float) Math.PI); // Scale to radians
-        float[][] rotationY = MatrixUtils.createRotationY(angleY * (float) Math.PI); // Scale to radians
+        // Create the view matrix and apply rotations
+        float[][] viewMatrix = MatrixUtils.createRotationX(angleX * (float) Math.PI);
+        float[][] rotationY = MatrixUtils.createRotationY(angleY * (float) Math.PI);
         viewMatrix = multiplyMatrices(viewMatrix, rotationY);
 
-        // Draw the cube
-        cube.draw(g2d, viewMatrix);
+        // Sort polygons by depth from farthest to nearest
+        List<Polygon3d> polygons = cube.getPolygons();
+        float[][] finalViewMatrix = viewMatrix;
+        polygons.sort((p1, p2) -> Float.compare(p2.getAverageZ(finalViewMatrix), p1.getAverageZ(finalViewMatrix)));
+
+        // Draw each polygon in sorted order
+        for (Polygon3d polygon : polygons) {
+            polygon.draw(g2d, viewMatrix);
+        }
     }
 
     private float[][] multiplyMatrices(float[][] a, float[][] b) {

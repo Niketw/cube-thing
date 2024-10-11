@@ -3,8 +3,6 @@ package main;
 import javax.swing.*;
 import renderer.Renderer;
 
-import java.awt.*;
-
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -17,4 +15,3 @@ public class Main {
         });
     }
 }
-

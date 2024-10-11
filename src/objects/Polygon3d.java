@@ -27,4 +27,13 @@ public class Polygon3d {
         g.setColor(Color.BLACK);
         g.drawPolygon(xPoints, yPoints, vertices.size());
     }
+
+    public float getAverageZ(float[][] projectionMatrix) {
+        float sum = 0;
+        for (Point3d vertex : vertices) {
+            Point3d transformedVertex = vertex.transform(projectionMatrix);
+            sum += transformedVertex.z;
+        }
+        return sum / vertices.size();
+    }
 }
