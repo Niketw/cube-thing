@@ -17,7 +17,6 @@ public class Renderer extends JPanel {
         setBackground(Color.GRAY);
         cube = createCube();
 
-        // Add mouse motion listener for rotation
         addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
                 angleX = (float) (e.getY() - getHeight() / 2) / (getHeight() / 2);
