@@ -26,7 +26,7 @@ public class Polygon3d {
         g.setColor(color);
 
         if (wireframeMode) {
-            g.setColor(new Color(225, 160, 0));
+            g.setColor(Color.WHITE);
             g.drawPolygon(xPoints, yPoints, vertices.size());
         } else {
             g.fillPolygon(xPoints, yPoints, vertices.size());
