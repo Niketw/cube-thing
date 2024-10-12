@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class MainFrame extends JFrame {
     public MainFrame() {
-        super("Cube Renderer");
+        super("blender lite");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Renderer renderer = new Renderer();
