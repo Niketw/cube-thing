@@ -13,6 +13,9 @@ import utils.MatrixUtils;
 public class Renderer extends JPanel {
     private final Object3d cube;
     private float angleX = 0, angleY = 0;
+    private float translationX = 0.0f;
+    private float translationY = 0.0f;
+    private float scale = 1.0f; // Initial scale factor for zoom
     private boolean wireframeMode = false; // Wireframe mode flag
 
     public Renderer() {
@@ -26,6 +29,37 @@ public class Renderer extends JPanel {
                 repaint();
             }
         });
+
+        addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                scale += (float) (e.getPreciseWheelRotation() * -0.1f); // Adjust scale based on wheel rotation
+                scale = Math.max(0.1f, scale); // Prevent zooming out too much
+                repaint();
+            }
+        });
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_A:
+                        translationX -= 0.1f;
+                        break;
+                    case KeyEvent.VK_D:
+                        translationX += 0.1f;
+                        break;
+                    case KeyEvent.VK_W:
+                        translationY -= 0.1f;
+                        break;
+                    case KeyEvent.VK_S:
+                        translationY += 0.1f;
+                        break;
+                }
+                repaint();
+            }
+        });
+        setFocusable(true); // Ensure the Renderer panel can receive key events
     }
 
     public void toggleWireframeMode() {
@@ -59,9 +93,15 @@ public class Renderer extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Create the view matrix and apply rotations
-        float[][] viewMatrix = MatrixUtils.createRotationX(angleX * (float) Math.PI);
+        // Create transformation matrices
+        float[][] scaleMatrix = MatrixUtils.createScale(scale);
+        float[][] translationMatrix = MatrixUtils.createTranslation(translationX, translationY);
+        float[][] rotationX = MatrixUtils.createRotationX(angleX * (float) Math.PI);
         float[][] rotationY = MatrixUtils.createRotationY(angleY * (float) Math.PI);
+
+        // Combine the matrices: translation -> scaling -> rotations
+        float[][] viewMatrix = multiplyMatrices(translationMatrix, scaleMatrix);
+        viewMatrix = multiplyMatrices(viewMatrix, rotationX);
         viewMatrix = multiplyMatrices(viewMatrix, rotationY);
 
         // Sort polygons by depth from farthest to nearest
@@ -71,7 +111,7 @@ public class Renderer extends JPanel {
 
         // Draw each polygon in sorted order
         for (Polygon3d polygon : polygons) {
-            polygon.draw(g2d, viewMatrix, wireframeMode); // Pass wireframeMode to the draw method
+            polygon.draw(g2d, viewMatrix, wireframeMode);
         }
     }
 
