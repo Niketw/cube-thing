@@ -1,8 +1,9 @@
 package renderer;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 import objects.Object3d;
@@ -12,6 +13,7 @@ import utils.MatrixUtils;
 
 public class Renderer extends JPanel {
     private final Object3d cube;
+    private BufferedImage offscreenImage; // Off-screen buffer
     private float angleX = 0, angleY = 0;
     private float translationX = 0.0f;
     private float translationY = 0.0f;
@@ -21,6 +23,10 @@ public class Renderer extends JPanel {
     public Renderer() {
         setBackground(Color.GRAY);
         cube = createCube();
+        offscreenImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB); // Initialize off-screen buffer
+
+        Timer timer = new Timer(16, e -> repaint()); // Approximately 60 FPS
+        timer.start();
 
         addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
@@ -90,8 +96,15 @@ public class Renderer extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
+
+        // Initialize graphics for offscreen image
+        Graphics2D g2d = offscreenImage.createGraphics();
+
+        // Set rendering hints for better quality
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setColor(getBackground());
+        g2d.fillRect(0, 0, offscreenImage.getWidth(), offscreenImage.getHeight()); // Clear the image
 
         // Create transformation matrices
         float[][] scaleMatrix = MatrixUtils.createScale(scale);
@@ -113,6 +126,12 @@ public class Renderer extends JPanel {
         for (Polygon3d polygon : polygons) {
             polygon.draw(g2d, viewMatrix, wireframeMode);
         }
+
+        // Draw the offscreen image to the panel
+        g.drawImage(offscreenImage, 0, 0, this);
+
+        // Dispose of the graphics context for offscreen image
+        g2d.dispose();
     }
 
     private float[][] multiplyMatrices(float[][] a, float[][] b) {
