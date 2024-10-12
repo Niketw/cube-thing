@@ -16,7 +16,7 @@ public class Renderer extends JPanel {
 
     public Renderer() {
         setBackground(Color.GRAY);
-        cube = createCube(Color.WHITE);
+        cube = createCube();
 
         addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
@@ -27,7 +27,7 @@ public class Renderer extends JPanel {
         });
     }
 
-    private Object3d createCube(Color cubeColor) {
+    private Object3d createCube() {
         Object3d cube = new Object3d();
         List<Point3d> vertices = List.of(
                 new Point3d(-1, -1, -1), new Point3d(1, -1, -1),
@@ -37,12 +37,12 @@ public class Renderer extends JPanel {
         );
 
         // Define the six faces of the cube
-        cube.addPolygon(new Polygon3d(List.of(vertices.get(0), vertices.get(1), vertices.get(2), vertices.get(3)), cubeColor)); // Front face
-        cube.addPolygon(new Polygon3d(List.of(vertices.get(4), vertices.get(5), vertices.get(6), vertices.get(7)), cubeColor)); // Back face
-        cube.addPolygon(new Polygon3d(List.of(vertices.get(0), vertices.get(1), vertices.get(5), vertices.get(4)), cubeColor)); // Bottom face
-        cube.addPolygon(new Polygon3d(List.of(vertices.get(2), vertices.get(3), vertices.get(7), vertices.get(6)), cubeColor)); // Top face
-        cube.addPolygon(new Polygon3d(List.of(vertices.get(1), vertices.get(2), vertices.get(6), vertices.get(5)), cubeColor)); // Right face
-        cube.addPolygon(new Polygon3d(List.of(vertices.get(0), vertices.get(3), vertices.get(7), vertices.get(4)), cubeColor)); // Left face
+        cube.addPolygon(new Polygon3d(List.of(vertices.get(0), vertices.get(1), vertices.get(2), vertices.get(3)), Color.WHITE)); // Front face
+        cube.addPolygon(new Polygon3d(List.of(vertices.get(4), vertices.get(5), vertices.get(6), vertices.get(7)), Color.WHITE)); // Back face
+        cube.addPolygon(new Polygon3d(List.of(vertices.get(0), vertices.get(1), vertices.get(5), vertices.get(4)), Color.WHITE)); // Bottom face
+        cube.addPolygon(new Polygon3d(List.of(vertices.get(2), vertices.get(3), vertices.get(7), vertices.get(6)), Color.WHITE)); // Top face
+        cube.addPolygon(new Polygon3d(List.of(vertices.get(1), vertices.get(2), vertices.get(6), vertices.get(5)), Color.WHITE)); // Right face
+        cube.addPolygon(new Polygon3d(List.of(vertices.get(0), vertices.get(3), vertices.get(7), vertices.get(4)), Color.WHITE)); // Left face
 
         return cube;
     }
