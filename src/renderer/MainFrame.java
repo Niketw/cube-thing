@@ -28,6 +28,15 @@ public class MainFrame extends JFrame {
         optionsMenu.add(toggleWireframeItem);
         menuBar.add(optionsMenu);
 
+        // Inside MainFrame constructor, after toggleWireframeItem
+        JMenuItem createShapeItem = new JMenuItem("Create Shape");
+        createShapeItem.addActionListener(e -> {
+            // Create and show the shape creator dialog
+            ShapeCreatorDialog dialog = new ShapeCreatorDialog(renderer);
+            dialog.setVisible(true);
+        });
+        optionsMenu.add(createShapeItem);
+
         // Set the menu bar in the main frame
         setJMenuBar(menuBar);
 

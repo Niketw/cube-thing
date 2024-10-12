@@ -134,6 +134,13 @@ public class Renderer extends JPanel {
         g2d.dispose();
     }
 
+    public void setShape(Polygon3d newPolygon) {
+        cube.getPolygons().clear(); // Clear existing polygons
+        cube.addPolygon(newPolygon); // Add the new polygon
+        repaint(); // Repaint the renderer to show the new shape
+    }
+
+
     private float[][] multiplyMatrices(float[][] a, float[][] b) {
         float[][] result = new float[4][4];
         for (int i = 0; i < 4; i++) {
