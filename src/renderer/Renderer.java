@@ -13,6 +13,7 @@ import utils.MatrixUtils;
 public class Renderer extends JPanel {
     private final Object3d cube;
     private float angleX = 0, angleY = 0;
+    private boolean wireframeMode = false; // Wireframe mode flag
 
     public Renderer() {
         setBackground(Color.GRAY);
@@ -25,6 +26,11 @@ public class Renderer extends JPanel {
                 repaint();
             }
         });
+    }
+
+    public void toggleWireframeMode() {
+        wireframeMode = !wireframeMode;
+        repaint();
     }
 
     private Object3d createCube() {
@@ -65,7 +71,7 @@ public class Renderer extends JPanel {
 
         // Draw each polygon in sorted order
         for (Polygon3d polygon : polygons) {
-            polygon.draw(g2d, viewMatrix);
+            polygon.draw(g2d, viewMatrix, wireframeMode); // Pass wireframeMode to the draw method
         }
     }
 

@@ -13,7 +13,7 @@ public class Polygon3d {
         this.color = color;
     }
 
-    public void draw(Graphics g, float[][] projectionMatrix) {
+    public void draw(Graphics g, float[][] projectionMatrix, boolean wireframeMode) {
         int[] xPoints = new int[vertices.size()];
         int[] yPoints = new int[vertices.size()];
 
@@ -24,9 +24,15 @@ public class Polygon3d {
         }
 
         g.setColor(color);
-        g.fillPolygon(xPoints, yPoints, vertices.size());
-        g.setColor(Color.BLACK);
-        g.drawPolygon(xPoints, yPoints, vertices.size());
+
+        if (wireframeMode) {
+            g.setColor(new Color(225, 160, 0));
+            g.drawPolygon(xPoints, yPoints, vertices.size());
+        } else {
+            g.fillPolygon(xPoints, yPoints, vertices.size());
+            g.setColor(Color.BLACK);
+            g.drawPolygon(xPoints, yPoints, vertices.size());
+        }
     }
 
     public float getAverageZ(float[][] projectionMatrix) {
