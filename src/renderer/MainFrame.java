@@ -1,9 +1,6 @@
 package renderer;
 
 import javax.swing.JFrame;
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.io.File;
 
 public class MainFrame extends JFrame {
     public MainFrame() {

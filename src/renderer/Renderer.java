@@ -15,8 +15,8 @@ public class Renderer extends JPanel {
     private float angleX = 0, angleY = 0;
 
     public Renderer() {
-        setBackground(new Color(105, 105, 105));
-        cube = createCube(new Color(169, 169, 169));
+        setBackground(Color.GRAY);
+        cube = createCube(Color.WHITE);
 
         addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
