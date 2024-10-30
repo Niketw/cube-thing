@@ -2,10 +2,11 @@ package renderer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+import input.KeyboardInput;
+import input.MouseInput;
 import objects.Object3d;
 import objects.Point3d;
 import objects.Polygon3d;
@@ -13,58 +14,29 @@ import utils.MatrixUtils;
 
 public class Renderer extends JPanel {
     private final Object3d vertexArray;
-    private BufferedImage offscreenImage; // Off-screen buffer
-    private float angleX = 0, angleY = 0;
-    private float translationX = 0.0f;
-    private float translationY = 0.0f;
-    private float scale = 1.0f; // Initial scale factor for zoom
+    private final BufferedImage offscreenImage;// Off-screen buffer
+
+    public float angleX = 0, angleY = 0;
+    public float translationX = 0.0f;
+    public float translationY = 0.0f;
+    public float scale = 1.0f; // Initial scale factor for zoom
+
     private boolean wireframeMode = false; // Wireframe mode flag
 
     public Renderer() {
         setBackground(Color.GRAY);
-        vertexArray = createvertexArray();
+        vertexArray = createCube();
         offscreenImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB); // Initialize off-screen buffer
 
         Timer timer = new Timer(16, e -> repaint()); // Approximately 60 FPS
         timer.start();
 
-        addMouseMotionListener(new MouseMotionAdapter() {
-            public void mouseDragged(MouseEvent e) {
-                angleX = (float) (e.getY() - getHeight() / 2) / ((float) getHeight() / 2);
-                angleY = (float) -1 * (e.getX() - (float) getWidth() / 2) / ((float) getWidth() / 2);
-                repaint();
-            }
-        });
+        MouseInput mouseInput = new MouseInput(this);
 
-        addMouseWheelListener(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                scale += (float) (e.getPreciseWheelRotation() * -0.1f); // Adjust scale based on wheel rotation
-                scale = Math.max(0.1f, scale); // Prevent zooming out too much
-                repaint();
-            }
-        });
+        addMouseMotionListener(mouseInput);
+        addMouseWheelListener(mouseInput);
+        addKeyListener(new KeyboardInput(this));
 
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_A:
-                        translationX -= 0.1f;
-                        break;
-                    case KeyEvent.VK_D:
-                        translationX += 0.1f;
-                        break;
-                    case KeyEvent.VK_W:
-                        translationY -= 0.1f;
-                        break;
-                    case KeyEvent.VK_S:
-                        translationY += 0.1f;
-                        break;
-                }
-                repaint();
-            }
-        });
         setFocusable(true); // Ensure the Renderer panel can receive key events
     }
 
@@ -73,7 +45,7 @@ public class Renderer extends JPanel {
         repaint();
     }
 
-    private Object3d createvertexArray() {
+    private Object3d createCube() {
         Object3d vertexArray = new Object3d();
         List<Point3d> vertices = List.of(
                 new Point3d(-1, -1, -1), new Point3d(1, -1, -1),
