@@ -2,42 +2,83 @@ package renderer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-import input.KeyboardInput;
-import input.MouseInput;
 import objects.Object3d;
 import objects.Point3d;
 import objects.Polygon3d;
 import utils.MatrixUtils;
 
 public class Renderer extends JPanel {
-    private final Object3d vertexArray;
-    private final BufferedImage offscreenImage;// Off-screen buffer
-
-    public float angleX = 0, angleY = 0;
-    public float translationX = 0.0f;
-    public float translationY = 0.0f;
-    public float scale = 1.0f; // Initial scale factor for zoom
-
+    private final Object3d cube;
+    private BufferedImage offscreenImage; // Off-screen buffer
+    private float angleX = 0, angleY = 0;
+    private float translationX = 0.0f;
+    private float translationY = 0.0f;
+    private float scale = 1.0f; // Initial scale factor for zoom
     private boolean wireframeMode = false; // Wireframe mode flag
 
     public Renderer() {
         setBackground(Color.GRAY);
-        vertexArray = createCube();
-        offscreenImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB); // Initialize off-screen buffer
+        cube = createCube();
+
+        // Initialize off-screen buffer with a default size (e.g., 800x600)
+        offscreenImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
 
         Timer timer = new Timer(16, e -> repaint()); // Approximately 60 FPS
         timer.start();
 
-        MouseInput mouseInput = new MouseInput(this);
+        addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent e) {
+                angleX = (float) (e.getY() - getHeight() / 2) / ((float) getHeight() / 2);
+                angleY = (float) -1 * (e.getX() - (float) getWidth() / 2) / ((float) getWidth() / 2);
+                repaint();
+            }
+        });
 
-        addMouseMotionListener(mouseInput);
-        addMouseWheelListener(mouseInput);
-        addKeyListener(new KeyboardInput(this));
+        addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                scale += (float) (e.getPreciseWheelRotation() * -0.1f); // Adjust scale based on wheel rotation
+                scale = Math.max(0.1f, scale); // Prevent zooming out too much
+                repaint();
+            }
+        });
 
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_A:
+                        translationX -= 0.1f;
+                        break;
+                    case KeyEvent.VK_D:
+                        translationX += 0.1f;
+                        break;
+                    case KeyEvent.VK_W:
+                        translationY -= 0.1f;
+                        break;
+                    case KeyEvent.VK_S:
+                        translationY += 0.1f;
+                        break;
+                }
+                repaint();
+            }
+        });
         setFocusable(true); // Ensure the Renderer panel can receive key events
+
+        // Resize offscreen image when the panel size changes
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                // Only resize if the component has a valid size
+                if (getWidth() > 0 && getHeight() > 0) {
+                    offscreenImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+                }
+            }
+        });
     }
 
     public void toggleWireframeMode() {
@@ -46,7 +87,7 @@ public class Renderer extends JPanel {
     }
 
     private Object3d createCube() {
-        Object3d vertexArray = new Object3d();
+        Object3d cube = new Object3d();
         List<Point3d> vertices = List.of(
                 new Point3d(-1, -1, -1), new Point3d(1, -1, -1),
                 new Point3d(1, 1, -1), new Point3d(-1, 1, -1),
@@ -54,15 +95,15 @@ public class Renderer extends JPanel {
                 new Point3d(1, 1, 1), new Point3d(-1, 1, 1)
         );
 
-        // Define the six faces of the vertexArray
-        vertexArray.addPolygon(new Polygon3d(List.of(vertices.get(0), vertices.get(1), vertices.get(2), vertices.get(3)), Color.WHITE)); // Front face
-        vertexArray.addPolygon(new Polygon3d(List.of(vertices.get(4), vertices.get(5), vertices.get(6), vertices.get(7)), Color.WHITE)); // Back face
-        vertexArray.addPolygon(new Polygon3d(List.of(vertices.get(0), vertices.get(1), vertices.get(5), vertices.get(4)), Color.WHITE)); // Bottom face
-        vertexArray.addPolygon(new Polygon3d(List.of(vertices.get(2), vertices.get(3), vertices.get(7), vertices.get(6)), Color.WHITE)); // Top face
-        vertexArray.addPolygon(new Polygon3d(List.of(vertices.get(1), vertices.get(2), vertices.get(6), vertices.get(5)), Color.WHITE)); // Right face
-        vertexArray.addPolygon(new Polygon3d(List.of(vertices.get(0), vertices.get(3), vertices.get(7), vertices.get(4)), Color.WHITE)); // Left face
+        // Define the six faces of the cube
+        cube.addPolygon(new Polygon3d(List.of(vertices.get(0), vertices.get(1), vertices.get(2), vertices.get(3)), Color.WHITE)); // Front face
+        cube.addPolygon(new Polygon3d(List.of(vertices.get(4), vertices.get(5), vertices.get(6), vertices.get(7)), Color.WHITE)); // Back face
+        cube.addPolygon(new Polygon3d(List.of(vertices.get(0), vertices.get(1), vertices.get(5), vertices.get(4)), Color.WHITE)); // Bottom face
+        cube.addPolygon(new Polygon3d(List.of(vertices.get(2), vertices.get(3), vertices.get(7), vertices.get(6)), Color.WHITE)); // Top face
+        cube.addPolygon(new Polygon3d(List.of(vertices.get(1), vertices.get(2), vertices.get(6), vertices.get(5)), Color.WHITE)); // Right face
+        cube.addPolygon(new Polygon3d(List.of(vertices.get(0), vertices.get(3), vertices.get(7), vertices.get(4)), Color.WHITE)); // Left face
 
-        return vertexArray;
+        return cube;
     }
 
     @Override
@@ -90,7 +131,7 @@ public class Renderer extends JPanel {
         viewMatrix = multiplyMatrices(viewMatrix, rotationY);
 
         // Sort polygons by depth from farthest to nearest
-        List<Polygon3d> polygons = vertexArray.getPolygons();
+        List<Polygon3d> polygons = cube.getPolygons();
         float[][] finalViewMatrix = viewMatrix;
         polygons.sort((p1, p2) -> Float.compare(p2.getAverageZ(finalViewMatrix), p1.getAverageZ(finalViewMatrix)));
 
@@ -105,13 +146,6 @@ public class Renderer extends JPanel {
         // Dispose of the graphics context for offscreen image
         g2d.dispose();
     }
-
-    public void setShape(Polygon3d newPolygon) {
-        vertexArray.getPolygons().clear(); // Clear existing polygons
-        vertexArray.addPolygon(newPolygon); // Add the new polygon
-        repaint(); // Repaint the renderer to show the new shape
-    }
-
 
     private float[][] multiplyMatrices(float[][] a, float[][] b) {
         float[][] result = new float[4][4];
