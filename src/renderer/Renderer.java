@@ -25,10 +25,10 @@ public class Renderer extends JPanel {
     private JButton toggleWireframeButton;  // Button to toggle wireframe mode
 
     public Renderer() {
-        setBackground(new Color(59, 59, 59));
+        setBackground(new Color(40, 40, 40));
         offscreenImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB); // Offscreen buffer
         Timer timer = new Timer(16, e -> repaint()); // 60 FPS
-        timer.start();
+            timer.start();
         setFocusable(true); // Ensure that key events are captured
 
         // Initialize shape selector combo box
