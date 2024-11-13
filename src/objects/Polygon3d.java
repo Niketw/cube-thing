@@ -13,6 +13,14 @@ public class Polygon3d {
         this.color = color;
     }
 
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
     public void draw(Graphics g, float[][] projectionMatrix, boolean wireframeMode) {
         int[] xPoints = new int[vertices.size()];
         int[] yPoints = new int[vertices.size()];

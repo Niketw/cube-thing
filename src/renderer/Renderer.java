@@ -7,12 +7,14 @@ import shapes.Cuboid;
 import shapes.Dodecahedron;
 import shapes.Icosahedron;
 import utils.MatrixUtils;
+import utils.RandomColor;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Random;
 
 public class Renderer extends JPanel {
     private Object3d currentShape; // This will hold the current shape to render
@@ -21,14 +23,17 @@ public class Renderer extends JPanel {
     private float translationX = 0.0f, translationY = 0.0f;
     private float scale = 1.0f; // Scale factor for zoom
     private boolean wireframeMode = false; // Wireframe mode flag
+    private boolean discoMode = false; // Disco Mode flag
     private JComboBox<String> shapeSelectorComboBox;  // Combo box for shape selection
     private JButton toggleWireframeButton;  // Button to toggle wireframe mode
+    private JButton toggleDiscoModeButton;  // Button to toggle Disco Mode
+    private Random random = new Random(); // Random generator for color changes
 
     public Renderer() {
         setBackground(new Color(40, 40, 40));
         offscreenImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB); // Offscreen buffer
         Timer timer = new Timer(16, e -> repaint()); // 60 FPS
-            timer.start();
+        timer.start();
         setFocusable(true); // Ensure that key events are captured
 
         // Initialize shape selector combo box
@@ -112,16 +117,27 @@ public class Renderer extends JPanel {
             repaint();
         });
 
-        // Add the button to the panel
-        add(toggleWireframeButton); // Make sure the button doesn't interfere with key events
+        // Create the "Toggle Disco Mode" button
+        toggleDiscoModeButton = new JButton("Toggle Disco Mode");
+        toggleDiscoModeButton.setFocusable(false); // Prevent button from intercepting key events
+        toggleDiscoModeButton.setOpaque(false);    // Make button transparent
+        toggleDiscoModeButton.addActionListener(e -> {
+            discoMode = !discoMode;
+            repaint();  // Redraw when the button is pressed
+        });
 
-        // Add the shape selector combo box to the panel at the top
-        setLayout(new BorderLayout());
+        // Add the buttons to the panel
         JPanel controlPanel = new JPanel();
         controlPanel.setBackground(new Color(59, 59, 59));
         controlPanel.add(shapeSelectorComboBox);
         controlPanel.add(toggleWireframeButton);
+        controlPanel.add(toggleDiscoModeButton);
+        setLayout(new BorderLayout());
         add(controlPanel, BorderLayout.NORTH);
+
+        // Timer for continuous color update (slower color changes)
+        Timer colorTransitionTimer = new Timer(200, e -> updateDiscoModeColor());  // Increased delay from 50ms to 200ms
+        colorTransitionTimer.start();
     }
 
     // Set the shape to render
@@ -130,10 +146,14 @@ public class Renderer extends JPanel {
         repaint();  // Redraw the shape
     }
 
-    // Toggle wireframe mode
-    public void toggleWireframeMode() {
-        wireframeMode = !wireframeMode;
-        repaint();
+    // Smoothly update the color of each polygon's color for Disco Mode
+    private void updateDiscoModeColor() {
+        if (discoMode && currentShape != null) {
+            // Iterate over each polygon and update its color
+            for (Polygon3d polygon : currentShape.getPolygons()) {
+                polygon.setColor(RandomColor.getRandomColor());  // Set a random light color
+            }
+        }
     }
 
     @Override
