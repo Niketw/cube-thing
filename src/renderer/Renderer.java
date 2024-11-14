@@ -35,7 +35,7 @@ public class Renderer extends JPanel {
         setFocusable(true); // Ensure that key events are captured
 
         // Initialize shape selector combo box
-        String[] shapes = {"Dodecahedron", "Icosahedron", "Cube", "Cuboid", "Water", "Pringle"};
+        String[] shapes = {"Dodecahedron", "Icosahedron", "Cube", "Cuboid", "Water", "Pringle", "Pyramid"};
         shapeSelectorComboBox = new JComboBox<>(shapes);
         shapeSelectorComboBox.setSelectedIndex(0); // Default to Dodecahedron
         shapeSelectorComboBox.setFocusable(false); // Prevent combo box from intercepting key events
@@ -60,6 +60,9 @@ public class Renderer extends JPanel {
                     break;
                 case "Pringle":
                     setShape(HyperbolicParaboloid.createHyperbolicParaboloid());
+                    break;
+                case "Pyramid":
+                    setShape(Pyramid.createPyramid(2,3));
                     break;
             }
         });

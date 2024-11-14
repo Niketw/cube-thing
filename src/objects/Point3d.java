@@ -21,4 +21,12 @@ public class Point3d {
         }
         return new Point3d(result[0] / result[3], result[1] / result[3], result[2] / result[3]);
     }
+
+    public float getX() {return x;}
+    public float getY() {return y;}
+    public float getZ() {return z;}
+
+    public void setX(float x) {this.x = x;}
+    public void setY(float y) {this.y = y;}
+    public void setZ(float z) {this.z = z;}
 }
