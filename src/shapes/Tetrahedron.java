@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import utils.RandomColor;  // Import the Utils class for random color generation
 
-public class Dodecahedron {
+public class Tetrahedron {
 
-    public static Object3d createDodecahedron() {
+    public static Object3d createTetrahedron() {
         List<Point3d> vertices = new ArrayList<>();
 
         // Vertices of the Equilateral Tetrahedron
