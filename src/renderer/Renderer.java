@@ -6,6 +6,7 @@ import shapes.Cube;
 import shapes.Cuboid;
 import shapes.Dodecahedron;
 import shapes.Icosahedron;
+import shapes.Water;
 import utils.MatrixUtils;
 import utils.RandomColor;
 
@@ -37,7 +38,7 @@ public class Renderer extends JPanel {
         setFocusable(true); // Ensure that key events are captured
 
         // Initialize shape selector combo box
-        String[] shapes = {"Dodecahedron", "Icosahedron", "Cube", "Cuboid"};
+        String[] shapes = {"Dodecahedron", "Icosahedron", "Cube", "Cuboid", "Water"};
         shapeSelectorComboBox = new JComboBox<>(shapes);
         shapeSelectorComboBox.setSelectedIndex(0); // Default to Dodecahedron
         shapeSelectorComboBox.setFocusable(false); // Prevent combo box from intercepting key events
@@ -56,6 +57,9 @@ public class Renderer extends JPanel {
                     break;
                 case "Cuboid":
                     setShape(Cuboid.createCuboid(2, 1, 1));
+                    break;
+                case "Water":
+                    setShape(Water.createWaterMolecule());
                     break;
             }
         });
