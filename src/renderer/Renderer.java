@@ -2,11 +2,8 @@ package renderer;
 
 import objects.Object3d;
 import objects.Polygon3d;
-import shapes.Cube;
-import shapes.Cuboid;
-import shapes.Dodecahedron;
-import shapes.Icosahedron;
-import shapes.Water;
+import shapes.*;
+import shapes.HyperbolicParaboloid;
 import utils.MatrixUtils;
 import utils.RandomColor;
 
@@ -38,7 +35,7 @@ public class Renderer extends JPanel {
         setFocusable(true); // Ensure that key events are captured
 
         // Initialize shape selector combo box
-        String[] shapes = {"Dodecahedron", "Icosahedron", "Cube", "Cuboid", "Water"};
+        String[] shapes = {"Dodecahedron", "Icosahedron", "Cube", "Cuboid", "Water", "Pringle"};
         shapeSelectorComboBox = new JComboBox<>(shapes);
         shapeSelectorComboBox.setSelectedIndex(0); // Default to Dodecahedron
         shapeSelectorComboBox.setFocusable(false); // Prevent combo box from intercepting key events
@@ -60,6 +57,9 @@ public class Renderer extends JPanel {
                     break;
                 case "Water":
                     setShape(Water.createWaterMolecule());
+                    break;
+                case "Pringle":
+                    setShape(HyperbolicParaboloid.createHyperbolicParaboloid());
                     break;
             }
         });
