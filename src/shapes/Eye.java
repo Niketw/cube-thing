@@ -13,7 +13,7 @@ public class Eye {
         Object3d eye = new Object3d();
 
         Color eyeballColor = new Color(255, 255, 255);
-        Color irisColor = new Color(0, 150,200);
+        Color irisColor = new Color(0, 150, 200);
         Color pupilColor = new Color(0, 0, 0);
 
         Point3d eyeballCenter = new Point3d(0f, 0f, 0f);
@@ -23,7 +23,9 @@ public class Eye {
 
         Point3d irisCenter = new Point3d(0f, 0f, eyeballRadius - 0.1f);
         float irisRadius = 0.4f;
-        addSphere(eye, irisCenter, irisRadius, 16, irisColor);
+        // Create a thinner iris by reducing the z-axis radius
+        float irisThickness = 0.15f;  // Make the iris thinner by adjusting this thickness
+        addEllipsoid(eye, irisCenter, irisRadius, irisThickness, 16, irisColor);
 
         Point3d pupilCenter = new Point3d(0f, 0f, eyeballRadius - 0.1f);
         float pupilRadius = 0.2f;
@@ -49,6 +51,45 @@ public class Eye {
                 float x = center.x + radius * sinPhi * cosTheta;
                 float y = center.y + radius * sinPhi * sinTheta;
                 float z = center.z + radius * cosPhi;
+                vertices.add(new Point3d(x, y, z));
+            }
+        }
+
+        for (int i = 0; i < segments; i++) {
+            for (int j = 0; j < segments; j++) {
+                int current = i * segments + j;
+                int next = i * segments + (j + 1) % segments;
+                int bottom = ((i + 1) % (segments + 1)) * segments + j;
+                int bottomNext = ((i + 1) % (segments + 1)) * segments + (j + 1) % segments;
+
+                obj.addPolygon(new Polygon3d(List.of(
+                        vertices.get(current),
+                        vertices.get(next),
+                        vertices.get(bottomNext),
+                        vertices.get(bottom)
+                ), color));
+            }
+        }
+    }
+
+    private static void addEllipsoid(Object3d obj, Point3d center, float radius, float thickness, int segments, Color color) {
+        List<Point3d> vertices = new ArrayList<>();
+        List<List<Integer>> faces = new ArrayList<>();
+
+        for (int i = 0; i <= segments; i++) {
+            float phi = (float)(Math.PI * i / segments);
+            float sinPhi = (float)Math.sin(phi);
+            float cosPhi = (float)Math.cos(phi);
+
+            for (int j = 0; j < segments; j++) {
+                float theta = (float)(2f * Math.PI * j / segments);
+                float sinTheta = (float)Math.sin(theta);
+                float cosTheta = (float)Math.cos(theta);
+
+                // Make the iris thinner by scaling the radius in the z-direction
+                float x = center.x + radius * sinPhi * cosTheta;
+                float y = center.y + radius * sinPhi * sinTheta;
+                float z = center.z + thickness * cosPhi; // Apply the thinner z-axis radius
                 vertices.add(new Point3d(x, y, z));
             }
         }

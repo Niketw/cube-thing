@@ -6,7 +6,7 @@ import objects.Polygon3d;
 
 import java.util.ArrayList;
 import java.util.List;
-import utils.RandomColor;
+import java.awt.Color;  // Import Color class
 
 public class Donut {
     public static Object3d createDonut(int radialSegments, int tubularSegments, float radius, float tubeRadius) {
@@ -32,6 +32,9 @@ public class Donut {
             }
         }
 
+        // Define the silver color for the donut
+        Color silver = new Color(212, 175, 55);  // RGB values for silver
+
         // Connect vertices to create faces
         for (int i = 0; i < radialSegments; i++) {
             for (int j = 0; j < tubularSegments; j++) {
@@ -44,8 +47,8 @@ public class Donut {
                 Point3d v3 = vertices.get(nextI * tubularSegments + nextJ);
                 Point3d v4 = vertices.get(i * tubularSegments + nextJ);
 
-                // Add polygon to the donut
-                donut.addPolygon(new Polygon3d(List.of(v1, v2, v3, v4), RandomColor.getRandomColor()));
+                // Add polygon to the donut with silver color
+                donut.addPolygon(new Polygon3d(List.of(v1, v2, v3, v4), silver));
             }
         }
 
