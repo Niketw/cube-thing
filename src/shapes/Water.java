@@ -14,7 +14,7 @@ public class Water {
 
         Color oxygenColor = new Color(255, 0, 0);
         Color hydrogenColor = new Color(255, 255, 255);
-        Color bondColor = new Color(200, 200, 200);
+        Color bondColor = new Color(0, 0, 0);
 
         Point3d oxygenCenter = new Point3d(0f, 0f, 0f);
         Point3d hydrogen1 = new Point3d(1.2f, 1.2f, 0f);

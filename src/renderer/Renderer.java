@@ -66,7 +66,7 @@ public class Renderer extends JPanel {
                     break;
                 case "Donut":
                     setShape(Donut.createDonut(25, 25, 2, 1.3f));
-
+                    break;
             }
         });
 
