@@ -19,6 +19,6 @@ public class RandomColor {
     // Helper method to generate a random value with a bias towards higher values
     private static int biasedRandomValue() {
         // The bias here is towards higher values. The random value will be between 128 and 255.
-        return 128 + random.nextInt(128);  // Range from 128 to 255
+        return 0 + random.nextInt(256);  // Range from 128 to 255
     }
 }

@@ -4,9 +4,9 @@ import objects.Object3d;
 import objects.Point3d;
 import objects.Polygon3d;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import utils.RandomColor;
 
 public class HyperbolicParaboloid {
 
@@ -14,28 +14,43 @@ public class HyperbolicParaboloid {
         Object3d paraboloid = new Object3d();
 
         // Default parameters for the hyperbolic paraboloid
-        int segments = 75;        // Number of grid divisions (higher = smoother)
-        float size = 2.0f;        // Size of the paraboloid
-        float a = 2.0f;           // Control the curvature along the x-axis
-        float b = 2.0f;           // Control the curvature along the y-axis
+        int segments = 30;        // Number of grid divisions (higher = smoother)
+        float size = 4.0f;        // Size of the paraboloid
+        float a = 1.2f;           // Semi-major axis for the oval (x-direction)
+        float b = 1f;           // Semi-minor axis for the oval (y-direction)
+        float curvatureStrength = 0.5f; // Strength of the curvature effect (0 to 1)
         float step = size / segments;
 
         List<Point3d> points = new ArrayList<>();
 
-        // Generate points for the hyperbolic paraboloid
+        // Generate points for the oval shape and apply hyperbolic curvature
         for (int i = 0; i < segments; i++) {
             for (int j = 0; j < segments; j++) {
-                // Calculate the x and y coordinates
-                float x = -size / 2 + i * step;
-                float y = -size / 2 + j * step;
+                // Parametric equation for the oval
+                float thetaX = 2 * (float) Math.PI * i / (segments - 1);  // X-axis angle
+                float thetaY = 2 * (float) Math.PI * j / (segments - 1);  // Y-axis angle
 
-                // Calculate the z value based on the hyperbolic paraboloid equation
-                float z = (x * x) / (a * a) - (y * y) / (b * b);
+                float x = a * (float) Math.cos(thetaX);
+                float y = b * (float) Math.sin(thetaY);
+
+                // Apply hyperbolic curvature (paraboloid-like effect)
+                float z = (x * x) / (a * a) - (y * y) / (b * b);  // Standard hyperbolic paraboloid equation
+
+                // Apply curvature strength to the z value to modify the amount of curvature
+                float distanceFromCenter = (float) Math.sqrt(x * x + y * y);
+                float maxDistance = (float) Math.sqrt(a * a + b * b);  // Maximum distance from center (ellipse size)
+                float curvatureFactor = (float) Math.exp(-distanceFromCenter * curvatureStrength / maxDistance); // Apply smooth exponential decay
+
+                z *= curvatureFactor; // Apply the curvature effect, rounding the corners more as we move outward
 
                 // Add the point to the list of points
                 points.add(new Point3d(x, y, z));
             }
         }
+
+        // Create a consistent color for the Pringle-like effect
+        // RGB color similar to a Pringle (golden-brown)
+        Color pringleColor = new Color(217, 155, 57); // RGB (217, 155, 57)
 
         // Create faces connecting the grid points
         for (int i = 0; i < segments - 1; i++) {
@@ -48,9 +63,9 @@ public class HyperbolicParaboloid {
                 Point3d p3 = points.get(idx + segments);
                 Point3d p4 = points.get(idx + segments + 1);
 
-                // Create two triangles for each square
-                paraboloid.addPolygon(new Polygon3d(List.of(p1, p2, p4), RandomColor.getRandomColor()));
-                paraboloid.addPolygon(new Polygon3d(List.of(p1, p4, p3), RandomColor.getRandomColor()));
+                // Create two triangles for each square with the consistent color
+                paraboloid.addPolygon(new Polygon3d(List.of(p1, p2, p4), pringleColor));
+                paraboloid.addPolygon(new Polygon3d(List.of(p1, p4, p3), pringleColor));
             }
         }
 
