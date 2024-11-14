@@ -35,7 +35,7 @@ public class Renderer extends JPanel {
         setFocusable(true); // Ensure that key events are captured
 
         // Initialize shape selector combo box
-        String[] shapes = {"Dodecahedron", "Icosahedron", "Cube", "Cuboid", "Water", "Pringle", "Eye"};
+        String[] shapes = {"Dodecahedron", "Icosahedron", "Cube", "Cuboid", "Water", "Pringle", "Eye", "Donut"};
         shapeSelectorComboBox = new JComboBox<>(shapes);
         shapeSelectorComboBox.setSelectedIndex(0); // Default to Dodecahedron
         shapeSelectorComboBox.setFocusable(false); // Prevent combo box from intercepting key events
@@ -64,6 +64,8 @@ public class Renderer extends JPanel {
                 case "Eye":
                     setShape(Eye.createEye());
                     break;
+                case "Donut":
+                    setShape(Donut.createDonut(25, 25, 2, 1.3f));
 
             }
         });
