@@ -15,32 +15,31 @@ import java.util.List;
 import java.util.Random;
 
 public class Renderer extends JPanel {
-    private Object3d currentShape; // This will hold the current shape to render
+    private Object3d currentShape;
     private BufferedImage offscreenImage;
     private float angleX = 0, angleY = 0;
     private float translationX = 0.0f, translationY = 0.0f;
-    private float scale = 1.0f; // Scale factor for zoom
-    private boolean wireframeMode = false; // Wireframe mode flag
-    private boolean discoMode = false; // Disco Mode flag
-    private JComboBox<String> shapeSelectorComboBox;  // Combo box for shape selection
-    private JButton toggleWireframeButton;  // Button to toggle wireframe mode
-    private JButton toggleDiscoModeButton;  // Button to toggle Disco Mode
-    private Random random = new Random(); // Random generator for color changes
+    private float scale = 1.0f;
+    private boolean wireframeMode = false;
+    private boolean discoMode = false;
+    private JComboBox<String> shapeSelectorComboBox;
+    private JButton toggleWireframeButton;
+    private JButton toggleDiscoModeButton;
+    private Random random = new Random();
 
     public Renderer() {
         setBackground(new Color(40, 40, 40));
-        offscreenImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB); // Offscreen buffer
-        Timer timer = new Timer(16, e -> repaint()); // 60 FPS
+        offscreenImage = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
+        Timer timer = new Timer(16, e -> repaint());
         timer.start();
         setFocusable(true); // Ensure that key events are captured
 
         // Initialize shape selector combo box
         String[] shapes = {"Cube", "Tetrahedron", "Icosahedron", "Cuboid", "Water", "Pringle", "Eye", "Donut", "Plane"};
         shapeSelectorComboBox = new JComboBox<>(shapes);
-        shapeSelectorComboBox.setSelectedIndex(0); // Default to Dodecahedron
-        shapeSelectorComboBox.setFocusable(false); // Prevent combo box from intercepting key events
+        shapeSelectorComboBox.setSelectedIndex(0);
+        shapeSelectorComboBox.setFocusable(false);
         shapeSelectorComboBox.addActionListener(e -> {
-            // Change the shape based on selection
             String selectedShape = (String) shapeSelectorComboBox.getSelectedItem();
             switch (selectedShape) {
                 case "Tetrahedron":
@@ -141,7 +140,6 @@ public class Renderer extends JPanel {
             repaint();  // Redraw when the button is pressed
         });
 
-        // Add the buttons to the panel
         JPanel controlPanel = new JPanel();
         controlPanel.setBackground(new Color(59, 59, 59));
         controlPanel.add(shapeSelectorComboBox);
@@ -158,15 +156,14 @@ public class Renderer extends JPanel {
     // Set the shape to render
     public void setShape(Object3d shape) {
         this.currentShape = shape;
-        repaint();  // Redraw the shape
+        repaint();
     }
 
-    // Smoothly update the color of each polygon's color for Disco Mode
+    // Disco mode color
     private void updateDiscoModeColor() {
         if (discoMode && currentShape != null) {
-            // Iterate over each polygon and update its color
             for (Polygon3d polygon : currentShape.getPolygons()) {
-                polygon.setColor(RandomColor.getRandomColor());  // Set a random light color
+                polygon.setColor(RandomColor.getRandomColor());
             }
         }
     }
@@ -185,7 +182,7 @@ public class Renderer extends JPanel {
         if (currentShape != null) {
             // Create transformation matrices
             float[][] scaleMatrix = MatrixUtils.createScale(scale);
-            float[][] translationMatrix = MatrixUtils.createTranslation(translationX, translationY);  // Include Z translation here
+            float[][] translationMatrix = MatrixUtils.createTranslation(translationX, translationY);
             float[][] rotationXMatrix = MatrixUtils.createRotationX(angleX * (float) Math.PI);
             float[][] rotationYMatrix = MatrixUtils.createRotationY(angleY * (float) Math.PI);
 

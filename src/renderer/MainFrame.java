@@ -6,7 +6,6 @@ import java.awt.*;
 public class MainFrame extends JFrame {
 
     public MainFrame() {
-        // Show information popup before rendering anything
         showInfoPopup();
 
         setTitle("3D Shape Renderer");
@@ -14,14 +13,12 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Create and initialize the renderer
         Renderer renderer = new Renderer();
-        renderer.setFocusable(true);  // Make sure it can capture key events
+        renderer.setFocusable(true);
 
-        // Add the renderer to the center
         add(renderer, BorderLayout.CENTER);
 
-        setLocationRelativeTo(null);  // Center the window
+        setLocationRelativeTo(null);
     }
 
     // Method to display the info popup
