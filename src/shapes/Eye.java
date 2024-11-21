@@ -23,8 +23,7 @@ public class Eye {
 
         Point3d irisCenter = new Point3d(0f, 0f, eyeballRadius - 0.1f);
         float irisRadius = 0.4f;
-        // Create a thinner iris by reducing the z-axis radius
-        float irisThickness = 0.15f;  // Make the iris thinner by adjusting this thickness
+        float irisThickness = 0.15f;
         addEllipsoid(eye, irisCenter, irisRadius, irisThickness, 16, irisColor);
 
         Point3d pupilCenter = new Point3d(0f, 0f, eyeballRadius - 0.1f);
@@ -86,10 +85,9 @@ public class Eye {
                 float sinTheta = (float)Math.sin(theta);
                 float cosTheta = (float)Math.cos(theta);
 
-                // Make the iris thinner by scaling the radius in the z-direction
                 float x = center.x + radius * sinPhi * cosTheta;
                 float y = center.y + radius * sinPhi * sinTheta;
-                float z = center.z + thickness * cosPhi; // Apply the thinner z-axis radius
+                float z = center.z + thickness * cosPhi;
                 vertices.add(new Point3d(x, y, z));
             }
         }
